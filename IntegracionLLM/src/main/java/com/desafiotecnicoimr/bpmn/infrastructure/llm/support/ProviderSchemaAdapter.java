@@ -28,6 +28,7 @@ public final class ProviderSchemaAdapter {
     public static JsonNode geminiSchema(ObjectMapper objectMapper, String schemaJson) throws JacksonException {
         JsonNode schema = portableSchema(objectMapper, schemaJson);
         removeGeminiArrayLimits(schema);
+        convertTypeArraysToNullable(schema);
         return schema;
     }
 
@@ -42,6 +43,26 @@ public final class ProviderSchemaAdapter {
             objectNode.remove("maxItems");
         }
         node.forEach(ProviderSchemaAdapter::removeGeminiArrayLimits);
+    }
+
+    private static void convertTypeArraysToNullable(JsonNode node) {
+        if (node instanceof ObjectNode objectNode && node.path("type").isArray()) {
+            var typeArray = node.path("type");
+            String nonNullType = null;
+            boolean hasNull = false;
+            for (JsonNode element : typeArray) {
+                if ("null".equals(element.asText())) {
+                    hasNull = true;
+                } else {
+                    nonNullType = element.asText();
+                }
+            }
+            if (hasNull && nonNullType != null && typeArray.size() == 2) {
+                objectNode.put("type", nonNullType);
+                objectNode.put("nullable", true);
+            }
+        }
+        node.forEach(ProviderSchemaAdapter::convertTypeArraysToNullable);
     }
 
     private static void removeNonPortableKeywords(JsonNode node) {

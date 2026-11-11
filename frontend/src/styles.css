@@ -641,10 +641,14 @@ a:focus-visible {
   background: var(--border);
 }
 
-.editor-new-button,
-.export-select {
+.editor-new-button {
   width: 108px;
   min-width: 108px;
+}
+
+.export-select {
+  width: 154px;
+  min-width: 154px;
 }
 
 .export-select {
