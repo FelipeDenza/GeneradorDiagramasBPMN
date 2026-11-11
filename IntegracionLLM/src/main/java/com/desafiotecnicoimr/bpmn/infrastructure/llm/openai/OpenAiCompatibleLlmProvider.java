@@ -6,6 +6,8 @@ import com.desafiotecnicoimr.bpmn.infrastructure.llm.ProviderDescriptor;
 import com.desafiotecnicoimr.bpmn.infrastructure.llm.exception.LlmProviderException;
 import com.desafiotecnicoimr.bpmn.infrastructure.llm.support.ProviderHttpErrors;
 import com.desafiotecnicoimr.bpmn.infrastructure.llm.support.ProviderSchemaAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClientException;
@@ -20,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class OpenAiCompatibleLlmProvider implements LlmProvider {
+
+    private static final Logger logger = LoggerFactory.getLogger(OpenAiCompatibleLlmProvider.class);
 
     private final ProviderDescriptor descriptor;
     private final String apiKey;
@@ -88,6 +92,7 @@ public abstract class OpenAiCompatibleLlmProvider implements LlmProvider {
                     .body(JsonNode.class);
             return extractContent(response);
         } catch (RestClientResponseException exception) {
+            logProviderError(exception);
             throw ProviderHttpErrors.translate(descriptor.id(), exception);
         } catch (RestClientException exception) {
             throw ProviderHttpErrors.translate(descriptor.id(), exception);
@@ -101,6 +106,15 @@ public abstract class OpenAiCompatibleLlmProvider implements LlmProvider {
     }
 
     protected void customizeRequest(Map<String, Object> body) {
+    }
+
+    private void logProviderError(RestClientResponseException exception) {
+        String body = exception.getResponseBodyAsString();
+        if (body.length() > 400) {
+            body = body.substring(0, 400);
+        }
+        logger.warn("{} API returned HTTP {}: {}",
+                descriptor.id(), exception.getStatusCode().value(), body);
     }
 
     private RestClient client() {

@@ -284,7 +284,7 @@ export default function App() {
       <footer className="site-footer">
         <span>Challenge técnico · Felipe Denza</span>
         <span className="site-footer__separator" aria-hidden="true">·</span>
-        <span className="repository-placeholder">Repositorio · próximamente</span>
+        <a href="https://github.com/FelipeDenza/GeneradorDiagramasBPMN" target="_blank" rel="noopener noreferrer">Repositorio</a>
       </footer>
     </div>
   );

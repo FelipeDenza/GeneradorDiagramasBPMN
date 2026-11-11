@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ClaudeCodeEditorTabs">
-    <option name="activeSessionId" value="06b9f24e-e4c1-44ea-b4a6-f0722e3efeff" />
+    <option name="activeSessionId" value="642cd6ec-9409-49fd-9161-813df18e858c" />
     <option name="openSessionIds">
       <list>
         <option value="5cef4f45-7f19-49d4-9a7c-f41598620270" />
         <option value="06b9f24e-e4c1-44ea-b4a6-f0722e3efeff" />
+        <option value="c409893d-fd75-479d-84b1-f88305f5abdf" />
+        <option value="642cd6ec-9409-49fd-9161-813df18e858c" />
       </list>
     </option>
     <option name="sessionPaths">
       <map>
         <entry key="06b9f24e-e4c1-44ea-b4a6-f0722e3efeff" value="/sessions/c7e2bce4-9822-4b0d-83fb-3a3e8dcb0f3c" />
         <entry key="5cef4f45-7f19-49d4-9a7c-f41598620270" value="/sessions/c7e2bce4-9822-4b0d-83fb-3a3e8dcb0f3c" />
+        <entry key="642cd6ec-9409-49fd-9161-813df18e858c" value="/sessions/c0d9b78f-98a6-46a4-9f83-1b039265bf2b" />
       </map>
     </option>
     <option name="sessionTitles">
       <map>
         <entry key="06b9f24e-e4c1-44ea-b4a6-f0722e3efeff" value="El proyecto esta terminado, lo unico que quiero ha" />
         <entry key="5cef4f45-7f19-49d4-9a7c-f41598620270" value="El proyecto esta terminado, lo unico que quiero ha" />
+        <entry key="642cd6ec-9409-49fd-9161-813df18e858c" value="en el footer dice &quot;Repositorio&quot; pero no esta en li" />
         <entry key="86074477-0a3c-4268-ad86-21921713063b" value="Claude Code" />
       </map>
     </option>

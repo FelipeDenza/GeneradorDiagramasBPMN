@@ -29,6 +29,7 @@ public final class ProviderSchemaAdapter {
         JsonNode schema = portableSchema(objectMapper, schemaJson);
         removeGeminiArrayLimits(schema);
         convertTypeArraysToNullable(schema);
+        removeAdditionalProperties(schema);
         return schema;
     }
 
@@ -63,6 +64,13 @@ public final class ProviderSchemaAdapter {
             }
         }
         node.forEach(ProviderSchemaAdapter::convertTypeArraysToNullable);
+    }
+
+    private static void removeAdditionalProperties(JsonNode node) {
+        if (node instanceof ObjectNode objectNode) {
+            objectNode.remove("additionalProperties");
+        }
+        node.forEach(ProviderSchemaAdapter::removeAdditionalProperties);
     }
 
     private static void removeNonPortableKeywords(JsonNode node) {

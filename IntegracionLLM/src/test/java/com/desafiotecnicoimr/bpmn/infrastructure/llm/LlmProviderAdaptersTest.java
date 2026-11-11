@@ -99,6 +99,7 @@ class LlmProviderAdaptersTest {
                 .andExpect(content().string(not(containsString("\"maxItems\""))))
                 .andExpect(content().string(not(containsString("\"minItems\""))))
                 .andExpect(content().string(containsString("\"nullable\":true")))
+                .andExpect(content().string(not(containsString("\"additionalProperties\""))))
                 .andRespond(withSuccess(geminiResponse(validProcess()), MediaType.APPLICATION_JSON));
 
         assertThat(provider.generate(REQUEST)).isEqualTo(validProcess());
