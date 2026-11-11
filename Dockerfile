@@ -29,4 +29,4 @@ COPY --from=app-build /workspace/IntegracionLLM/target/bpmn-prompt-backend-0.0.1
 ENV PORT=8080
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["sh", "-c", "exec java -jar /app/app.jar --server.port=${PORT:-8080}"]
