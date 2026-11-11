@@ -35,6 +35,10 @@ public final class ProviderSchemaAdapter {
         if (node instanceof ObjectNode objectNode
                 && node.path("type").isTextual()
                 && "array".equals(node.path("type").asText())) {
+            // Gemini supports these bounds, but compiling them into constrained
+            // decoding increases schema complexity. ProcessValidator enforces
+            // the same limits after generation.
+            objectNode.remove("minItems");
             objectNode.remove("maxItems");
         }
         node.forEach(ProviderSchemaAdapter::removeGeminiArrayLimits);

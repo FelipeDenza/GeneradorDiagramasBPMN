@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -21,6 +23,8 @@ import java.util.Map;
 
 @Component
 public class GeminiLlmProvider implements LlmProvider {
+
+    private static final Logger logger = LoggerFactory.getLogger(GeminiLlmProvider.class);
 
     private final ProviderDescriptor descriptor;
     private final String apiKey;
@@ -79,6 +83,7 @@ public class GeminiLlmProvider implements LlmProvider {
                     .body(JsonNode.class);
             return extractContent(response);
         } catch (RestClientResponseException exception) {
+            logProviderError(exception);
             throw ProviderHttpErrors.translate(descriptor.id(), exception);
         } catch (RestClientException exception) {
             throw ProviderHttpErrors.translate(descriptor.id(), exception);
@@ -89,6 +94,24 @@ public class GeminiLlmProvider implements LlmProvider {
                     exception
             );
         }
+    }
+
+    private void logProviderError(RestClientResponseException exception) {
+        String message = "No diagnostic message returned";
+        try {
+            JsonNode errorMessage = objectMapper.readTree(exception.getResponseBodyAsString())
+                    .path("error")
+                    .path("message");
+            if (errorMessage.isTextual()) {
+                message = errorMessage.asText().replaceAll("[\\r\\n]+", " ");
+                if (message.length() > 400) {
+                    message = message.substring(0, 400);
+                }
+            }
+        } catch (JacksonException ignored) {
+            // Keep provider diagnostics best-effort and avoid logging full responses.
+        }
+        logger.warn("Gemini API returned HTTP {}: {}", exception.getStatusCode().value(), message);
     }
 
     private RestClient client() {
