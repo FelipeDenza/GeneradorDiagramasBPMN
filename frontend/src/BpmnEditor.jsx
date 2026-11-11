@@ -19,6 +19,7 @@ export default function BpmnEditor({ diagramXml, generationVersion, onError, onN
   const [isDirty, setIsDirty] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(100);
+  const [showNewConfirm, setShowNewConfirm] = useState(false);
 
   useEffect(() => {
     onErrorRef.current = onError;
@@ -156,9 +157,15 @@ export default function BpmnEditor({ diagramXml, generationVersion, onError, onN
   }
 
   function handleNewDiagram() {
-    if (isDirty && !window.confirm('Tenés cambios sin exportar. ¿Querés empezar un diagrama nuevo de todas formas?')) {
+    if (isDirty) {
+      setShowNewConfirm(true);
       return;
     }
+    onNewDiagram();
+  }
+
+  function confirmNewDiagram() {
+    setShowNewConfirm(false);
     onNewDiagram();
   }
 
@@ -191,7 +198,6 @@ export default function BpmnEditor({ diagramXml, generationVersion, onError, onN
         <div className="editor-heading">
           <div className="editor-heading__title">
             <h2>Editor BPMN</h2>
-            {isDirty && <span className="unsaved-badge">Cambios sin exportar</span>}
           </div>
         </div>
         <div className="editor-actions">
@@ -248,6 +254,18 @@ export default function BpmnEditor({ diagramXml, generationVersion, onError, onN
           </div>
         )}
       </div>
+
+      {showNewConfirm && (
+        <div className="confirm-overlay" onClick={() => setShowNewConfirm(false)}>
+          <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
+            <p>¿Seguro que quieres borrar el diagrama actual?</p>
+            <div className="confirm-dialog__actions">
+              <button className="button button--tertiary" type="button" onClick={() => setShowNewConfirm(false)}>Cancelar</button>
+              <button className="button button--primary" type="button" onClick={confirmNewDiagram}>Sí, borrar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
