@@ -1,6 +1,6 @@
 const API_URL = (import.meta.env?.VITE_API_URL ?? '').replace(/\/$/, '');
-// Generación + una reparación: dos llamadas con conexión de 10 s y lectura de 60 s, más margen.
-const DEFAULT_TIMEOUT_MS = 150_000;
+// Dos llamadas LLM de hasta 120 s (generación + reparación), más margen para el backend.
+const DEFAULT_TIMEOUT_MS = 270_000;
 
 async function request(path, options = {}, timeoutMs = DEFAULT_TIMEOUT_MS) {
   const controller = new AbortController();
