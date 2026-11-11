@@ -1,0 +1,11 @@
+services:
+  bpmn-prompt:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./IntegracionLLM/.env
+    environment:
+      PORT: "8080"
+    restart: unless-stopped

@@ -1,0 +1,12 @@
+.git
+**/.git
+.idea
+**/.idea
+**/target
+**/node_modules
+**/dist
+**/.env
+**/.env.*
+**/*.log
+**/.m2
+.codex-presentation-build
