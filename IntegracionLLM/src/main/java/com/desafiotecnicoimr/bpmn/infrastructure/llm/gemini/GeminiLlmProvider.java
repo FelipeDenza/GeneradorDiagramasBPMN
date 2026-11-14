@@ -5,7 +5,6 @@ import com.desafiotecnicoimr.bpmn.infrastructure.llm.LlmRequest;
 import com.desafiotecnicoimr.bpmn.infrastructure.llm.ProviderDescriptor;
 import com.desafiotecnicoimr.bpmn.infrastructure.llm.exception.LlmProviderException;
 import com.desafiotecnicoimr.bpmn.infrastructure.llm.support.ProviderHttpErrors;
-import com.desafiotecnicoimr.bpmn.infrastructure.llm.support.ProviderSchemaAdapter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -60,19 +59,17 @@ public class GeminiLlmProvider implements LlmProvider {
     @Override
     public String generate(LlmRequest request) {
         try {
-            JsonNode schema = ProviderSchemaAdapter.geminiSchema(objectMapper, request.responseSchema());
+            String fullInstruction = request.systemInstruction()
+                    + "\n\nJSON Schema:\n" + request.responseSchema();
+
             Map<String, Object> body = Map.of(
                     "systemInstruction", Map.of(
-                            "parts", List.of(Map.of("text", request.systemInstruction()))
+                            "parts", List.of(Map.of("text", fullInstruction))
                     ),
                     "contents", List.of(Map.of(
                             "role", "user",
                             "parts", List.of(Map.of("text", request.userMessage()))
-                    )),
-                    "generationConfig", Map.of(
-                            "responseMimeType", "application/json",
-                            "responseJsonSchema", schema
-                    )
+                    ))
             );
 
             JsonNode response = client().post()

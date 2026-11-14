@@ -80,7 +80,7 @@ class LlmProviderAdaptersTest {
     }
 
     @Test
-    void geminiAdaptsSchemaAndExtractsCandidateText() {
+    void geminiSendsSchemaInPromptAndExtractsCandidateText() {
         RestClient.Builder builder = RestClient.builder();
         MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
         GeminiLlmProvider provider = new GeminiLlmProvider(
@@ -88,18 +88,14 @@ class LlmProviderAdaptersTest {
                 new ObjectMapper(),
                 "gemini-key",
                 "https://gemini.test",
-                "gemini-3.8-flash"
+                "gemini-3.5-flash-lite"
         );
-        server.expect(requestTo("https://gemini.test/models/gemini-3.8-flash:generateContent"))
+        server.expect(requestTo("https://gemini.test/models/gemini-3.5-flash-lite:generateContent"))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(header("x-goog-api-key", "gemini-key"))
-                .andExpect(content().string(containsString("\"responseJsonSchema\"")))
-                .andExpect(content().string(not(containsString("\"$schema\""))))
-                .andExpect(content().string(not(containsString("\"pattern\""))))
-                .andExpect(content().string(not(containsString("\"maxItems\""))))
-                .andExpect(content().string(not(containsString("\"minItems\""))))
-                .andExpect(content().string(containsString("\"nullable\":true")))
-                .andExpect(content().string(not(containsString("\"additionalProperties\""))))
+                .andExpect(content().string(containsString("JSON Schema:")))
+                .andExpect(content().string(not(containsString("\"generationConfig\""))))
+                .andExpect(content().string(not(containsString("\"responseSchema\""))))
                 .andRespond(withSuccess(geminiResponse(validProcess()), MediaType.APPLICATION_JSON));
 
         assertThat(provider.generate(REQUEST)).isEqualTo(validProcess());
